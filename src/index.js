@@ -6,3 +6,13 @@ Dotenv.config({
 })
 
 connect() 
+.then(()=>{
+    app.listen(process.env.PORT || 8000 ,()=>{
+        console.log(`MONGODB IS CONNECTED SUCCESSFULLY at PORT ${process.env.PORT}`)
+    })
+    
+})
+.catch((error)=>{
+    console.log("Error Occured",error)
+    
+})
