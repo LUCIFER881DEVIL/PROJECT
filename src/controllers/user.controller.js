@@ -3,7 +3,7 @@ import {ApiError} from "../utils/ApiError.js";
 import {user} from "../Models/user.models.js";
 import {uploadoncloudinary} from "../utils/cloudinary.js";
 import{Apiresponses} from "../utils/Apiresponses.js";
-// import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 // import mongoose from "mongoose";
 
 
@@ -208,7 +208,48 @@ const logoutuser = asynchandler(async (req, res) => {
         );
 });
 
+const refreshaccesstoken = asynchandler(async(req , res)=>{
+    const incomingrefreshtoken =req.cookies?.refreshToken || req.body.refreshToken
 
+    if (!incomingrefreshtoken) {
+        throw new ApiError(404, "token not Found ")
+    }
 
-export {registeration , loginuser, logoutuser}
+try {
+    const decodedtoken =  jwt.verify(incomingrefreshtoken,process.env.REFRESH_TOKEN_SECRET)
+    if (!decodedtoken) {
+        throw new ApiError(404, "token not Found ")
+    }
+        const users = await user.findById(decodedtoken?._id)
+        if (!users) {
+            throw new ApiError(404, " user not found ")}
+    
+        if (incomingrefreshtoken!==users?.RefreshTokens) {
+            throw new ApiError(404, " token is expires or  not found ")
+        }
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+    
+        const {accessToken, newRefreshToken} = await generateAccessAndRefereshTokens(users._id)
+    
+        return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("newrefreshToken", newRefreshToken, options)
+        .json(
+            new Apiresponses(
+                200, 
+                {accessToken, refreshToken: newRefreshToken},
+                "Access token refreshed"
+            )
+        )
+    
+} catch (error) {
+    throw new ApiError(404, error?.message||"invalid refresh token")
+
+}
+})
+export {registeration , loginuser, logoutuser,refreshaccesstoken }
 // export default loginuser
