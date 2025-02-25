@@ -9,9 +9,9 @@ export const verifyJWT = asynchandler(async (req, res, next) => {
         const token = req.cookies?.accessToken || req.headers?.authorization?.split(" ")[1];
         
         // Log extracted tokens for debugging
-        console.log("Cookie Token:", req.cookies?.accessToken);
-        console.log("Authorization Header:", req.headers?.authorization);
-        console.log("Extracted Token:", token);
+        // console.log("Cookie Token:", req.cookies?.accessToken);
+        // console.log("Authorization Header:", req.headers?.authorization);
+        // console.log("Extracted Token:", token);
 
         // Check if the token is present
         if (!token) {
@@ -21,7 +21,7 @@ export const verifyJWT = asynchandler(async (req, res, next) => {
 
         // Verify the token
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        console.log("Decoded Token:", decoded);
+        // console.log("Decoded Token:", decoded);
 
         // Check if the decoded token has _id
         if (!decoded || !decoded._id) {
@@ -40,7 +40,7 @@ export const verifyJWT = asynchandler(async (req, res, next) => {
 
         // Attach user to request object
         req.user = authenticatedUser;
-        console.log("Authenticated User:", req.user);
+        // console.log("Authenticated User:", req.user);
 
         next();
     } catch (error) {

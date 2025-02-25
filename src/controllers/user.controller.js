@@ -41,7 +41,7 @@ const registeration = asynchandler(async(req , res)=>{
 
     //  1. GETTING DETAILS FROM THE USER
     const{Fullname , Email , username , Password }=req.body
-    console.log("email : " , Email);
+    // console.log("email : " , Email);
     //  2 . VALIDATION OF DATA 
     if (Fullname === "") {
         throw new ApiError(400 , "some is wrong")
@@ -180,7 +180,7 @@ const logoutuser = asynchandler(async (req, res) => {
 
     // Safe way to access _id
     const userId = req.user?._id;
-    console.log("User ID:", userId);
+    // console.log("User ID:", userId);
 
     // Update the user to remove refresh tokens
     await user.findByIdAndUpdate(
